@@ -131,10 +131,13 @@ module pcb_solt(t=1, w=1, h=35) {
 }
 
 //lcd相对于手柄底部的位置
-lcd_off=53.5;
+//lcd_off=53.5;
 
-m1_6_fore=88;
-m1_6_back=42.5;
+//使用手柄尾部来定位坐标
+lcd_off=handle_length-37.5;
+
+m1_6_fore=handle_length-3;//使用相对于手柄长度的坐标，这样螺丝孔只依赖于手柄长度
+m1_6_back=handle_length-48.5;
 
 
 //手柄主体部分
@@ -189,9 +192,9 @@ module handle(){
             rotate([270,0,0])m1_6();
 
         //背部螺丝孔
-        color("red")
-            translate([0,handle_thickness/2+0.6,m1_6_back])
-            rotate([90,0,0])m1_6();
+        //color("red")
+        //    translate([0,handle_thickness/2+0.6,m1_6_back])
+        //    rotate([90,0,0])m1_6();
 
     }
 
@@ -301,6 +304,7 @@ module bottom_screw_hole(){
         difference() {
             union(){
                 hull(){
+                    //增加一些底部螺丝圆环高度
                     cyl(h=1, d=15,anchor=BOTTOM);
 
                     translate([0,0,transition_length])
@@ -418,11 +422,11 @@ module bottom_header(){
 // 最终生成模型时加大到100以上生成高精度模型
 $fn=100;
 //手柄主体部分
-//handle_all();
+handle_all();
 //c245_pcb();
 
 // 顶部盖子加按键帽一起方便打印，之后用小刀分离
-gen_keycap_and_panel();
+//gen_keycap_and_panel();
 
 // 顶部盖子
 //c245_top_panel();

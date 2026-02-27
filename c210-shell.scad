@@ -409,12 +409,58 @@ module bottom_header(){
 }
 
 
+// 烙铁头盖子模块
+module soldering_iron_cap(
+    outer_d = 15,          // 外径15mm
+    inner_d_base = 12.4,   // 基础内径（含间隙0.4mm）
+    inner_length = 38,     // 内部深度38mm
+    bottom_thickness = 2.5,  // 封闭端厚度
+    ridge_height = 0.3,    // 每个凸起向内高度0.3mm
+    groove_width = 0.6,    // 凸起宽度
+    groove_spacing = 1.8,  // 间距
+    ridge_rounding = 0.3  // 内部凸起环圆角半径
+) {
+    total_height = inner_length + bottom_thickness;
+    
+    // 凸起中心位置（从开口端向下对齐头部凹槽）
+    ridge_centers = [
+        total_height - (1.8 + (groove_width + groove_spacing) * 2),
+        total_height - (1.8 + groove_width + groove_spacing),
+        total_height - 1.8,
+    ];
+    
+    difference() {
+        // 外筒主体
+        cyl(d=outer_d, h=total_height,
+            rounding1 = 1.5,  // 封闭端圆角
+            rounding2 = 0.2,                // 开口端圆角
+            anchor=BOTTOM);
+        
+        // 挖空内部腔体
+        translate([0, 0, bottom_thickness])
+            cyl(d=inner_d_base, h=inner_length + 0.1, anchor=BOTTOM);
+    }
+    
+    // 内部3个环形凸起（向内凸起，添加圆角）
+    for (z = ridge_centers) {
+        translate([0, 0, z - groove_width/2]) {
+            tube(
+                od = inner_d_base+1,               // 外径贴内壁
+                id = inner_d_base -  1.5*ridge_height,  // 内径缩小，向内凸起
+                h = groove_width,
+                rounding = ridge_rounding,       // 添加圆角（顶部/底部边缘圆化）
+                anchor = BOTTOM
+            );
+        }
+    }
+}
+
 
 // 控制圆等精度，预览时跳小减少渲染资源消耗，
 // 最终生成模型时加大到100以上生成高精度模型
-//$fn=100;
+$fn=100;
 //手柄主体部分
-handle_all();
+//handle_all();
 
 // 顶部盖子加按键帽一起方便打印，之后用小刀分离
 //gen_keycap_and_panel();
@@ -426,7 +472,7 @@ handle_all();
 // 底部金属头
 //bottom_header();
 
-
+soldering_iron_cap();
 
 
 

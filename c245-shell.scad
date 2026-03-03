@@ -68,24 +68,25 @@ module chamfer_screen() {
 module keycap(key_h=2.5,key_d=3,fill=true) {
     difference() {
         union() {
-            cyl(h=1.5, d=key_d+2,anchor=BOTTOM);
-            translate([0, 0, 1.5])
+             cyl(h=1, d=key_d+2,anchor=BOTTOM);
+            translate([0, 0, 1])
                 cyl(h=key_h, d=key_d, rounding2=0.5,anchor=BOTTOM); // 顶部圆角
         }
-        if(!fill){
-            cyl(h=key_h, d=1.5,anchor=BOTTOM);
-        }
+        //if(!fill){
+        //    cyl(h=key_h, d=1.5,anchor=BOTTOM);
+        //}
     }
 }
 
+// 模拟pcb上按键加上键帽后所占空间
 //C388295按键,按键高度根据型号调整
 module key(){
     //使用键帽进行diff,增加余量保证顺畅按压
     //按键半径比实际大0.05
     color("red")
         //按键2mm
-        translate([0,0,2+0.1])
-        keycap(key_d=3.1);
+        translate([0,0,2.5+0.1])
+            keycap(key_d=3.1);
     rotate([0,0,270]){
         translate([-2.7,-3.2,0])
             cuboid([5.2,6.4,1.2],anchor=LEFT+FRONT+BOTTOM);
@@ -283,12 +284,12 @@ module gen_keycap_and_panel(){
     rotate([90,90,0])
         union(){
             translate([-3.0,1,0])
-                cylinder(2,d=2);
+                cylinder(3,d=2);
             translate([-3.0,1,1.9])
                 keycap(fill=true);
 
             translate([3.0,1,0])
-                cylinder(2,d=2);
+                cylinder(3,d=2);
             translate([3.0,1,1.9])
                 keycap(fill=true);
         }
